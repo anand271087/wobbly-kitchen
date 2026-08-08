@@ -16,7 +16,10 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# Netlify guesses octet-stream for .webmanifest, which stricter
+# browsers refuse — say it explicitly so "Add to Home Screen" works.
 [[headers]]
   for = "/manifest.webmanifest"
   [headers.values]
+    Content-Type = "application/manifest+json"
     Cache-Control = "public, max-age=0, must-revalidate"
