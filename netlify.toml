@@ -1,0 +1,22 @@
+# Wobbly Kitchen — there is nothing to build, just serve the folder.
+[build]
+  publish = "."
+
+# The service worker and the page itself must never be served stale,
+# or the tablet keeps playing an old version after a deploy.
+# (The game's own assets stay cached offline by sw.js — this only
+#  controls what the browser revalidates against the network.)
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
