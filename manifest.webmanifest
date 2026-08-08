@@ -1,0 +1,16 @@
+{
+  "name": "Wobbly Kitchen",
+  "short_name": "Wobbly Kitchen",
+  "description": "A sandbox cooking game for small chefs. Prep, cook, plate and serve.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#FFD766",
+  "theme_color": "#E8412F",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
