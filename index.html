@@ -51,10 +51,17 @@ body{
 
 /* ============================================================ LAYOUT */
 #app{
-  height:100dvh;height:100vh;
+  /* dvh must come SECOND so it wins where supported — otherwise iOS
+     Safari sizes to 100vh and hides the bottom row behind the toolbar */
+  height:100vh;
+  height:100dvh;
   display:grid;grid-template-rows:auto 1fr;
   gap:clamp(4px,.9dvh,11px);
-  padding:clamp(4px,1dvh,12px);
+  /* keep clear of the notch / Dynamic Island / home indicator */
+  padding-top:max(clamp(4px,1dvh,12px), env(safe-area-inset-top));
+  padding-bottom:max(clamp(4px,1dvh,12px), env(safe-area-inset-bottom));
+  padding-left:max(clamp(4px,1dvh,12px), env(safe-area-inset-left));
+  padding-right:max(clamp(4px,1dvh,12px), env(safe-area-inset-right));
 }
 header{
   display:flex;align-items:center;justify-content:space-between;gap:8px;
@@ -118,12 +125,12 @@ main{display:grid;grid-template-columns:clamp(228px,23vw,290px) 1fr;gap:clamp(6p
 }
 
 /* ============================================================ KITCHEN */
-#kitchen{display:grid;grid-template-rows:auto auto auto;align-content:center;gap:0;min-height:0;}
+#kitchen{display:grid;grid-template-rows:auto auto auto;align-content:center;gap:0;min-height:0;min-width:0;}
 
 /* the counter top — the four stations stand on it, left to right, in cooking order */
 #counter{
   display:grid;grid-template-columns:repeat(4,1fr);
-  gap:clamp(4px,.8vw,12px);min-height:0;
+  gap:clamp(4px,.8vw,12px);min-height:0;min-width:0;
   padding:clamp(5px,1dvh,13px) clamp(4px,.8vw,11px) 0;
   background:linear-gradient(180deg,rgba(255,255,255,.2) 0%,rgba(255,255,255,.52) 60%,var(--cream-deep) 100%);
   border:var(--line) solid var(--brown);
@@ -133,7 +140,7 @@ main{display:grid;grid-template-columns:clamp(228px,23vw,290px) 1fr;gap:clamp(6p
 .station{
   position:relative;display:flex;flex-direction:column;
   align-items:center;justify-content:space-between;
-  gap:clamp(2px,.5dvh,7px);min-height:0;
+  gap:clamp(2px,.5dvh,7px);min-height:0;min-width:0;
 }
 /* the numbered step label above each station */
 .steptag{
@@ -158,7 +165,7 @@ main{display:grid;grid-template-columns:clamp(228px,23vw,290px) 1fr;gap:clamp(6p
 /* only the working area lights up when the chef is standing here */
 .stationBody{
   position:relative;display:flex;flex-direction:column;align-items:center;
-  gap:clamp(2px,.5dvh,7px);width:100%;
+  gap:clamp(2px,.5dvh,7px);width:100%;min-width:0;
   padding:clamp(4px,.8dvh,10px) 2px clamp(2px,.5dvh,6px);
   border-radius:18px;
   transition:background .2s ease,box-shadow .2s ease,transform .2s var(--pop);
@@ -181,7 +188,7 @@ main{display:grid;grid-template-columns:clamp(228px,23vw,290px) 1fr;gap:clamp(6p
 
 /* ---------- prep board ---------- */
 #board{
-  position:relative;width:clamp(112px,96%,220px);height:clamp(90px,17.5dvh,166px);
+  position:relative;width:min(96%,220px);height:clamp(64px,17.5dvh,166px);
   background:
     repeating-linear-gradient(90deg,rgba(0,0,0,.06) 0 3px,transparent 3px 24px),
     linear-gradient(170deg,var(--wood) 0%,var(--wood-dark) 100%);
@@ -202,7 +209,9 @@ main{display:grid;grid-template-columns:clamp(228px,23vw,290px) 1fr;gap:clamp(6p
 
 /* ---------- pan ---------- */
 #pan{
-  position:relative;width:clamp(120px,25dvh,214px);height:clamp(120px,25dvh,214px);border-radius:50%;
+  position:relative;
+  width:min(clamp(80px,25dvh,214px), 94%);aspect-ratio:1;height:auto;
+  border-radius:50%;
   background:radial-gradient(circle at 38% 32%,#6b5140 0%,#3d2718 78%);
   border:var(--line) solid var(--brown);
   box-shadow:6px 8px 0 rgba(74,44,24,.32),inset 0 -10px 22px rgba(0,0,0,.45);
@@ -256,7 +265,7 @@ main{display:grid;grid-template-columns:clamp(228px,23vw,290px) 1fr;gap:clamp(6p
 
 /* ---------- plate ---------- */
 #plate{
-  position:relative;width:clamp(112px,96%,220px);height:clamp(90px,16.5dvh,158px);border-radius:50%;
+  position:relative;width:min(96%,220px);height:clamp(60px,16.5dvh,158px);border-radius:50%;
   background:radial-gradient(circle at 40% 34%,#fff 0%,var(--cream) 55%,var(--cream-deep) 100%);
   border:var(--line) solid var(--brown);
   box-shadow:6px 8px 0 rgba(74,44,24,.28),inset 0 -6px 14px rgba(74,44,24,.12);
@@ -271,7 +280,7 @@ main{display:grid;grid-template-columns:clamp(228px,23vw,290px) 1fr;gap:clamp(6p
 
 /* ---------- the customer ---------- */
 #seat{
-  position:relative;width:clamp(112px,96%,220px);height:clamp(90px,16.5dvh,158px);
+  position:relative;width:min(96%,220px);height:clamp(60px,16.5dvh,158px);
   display:flex;align-items:flex-end;justify-content:center;
   border-bottom:6px dashed rgba(74,44,24,.3);
 }
@@ -424,10 +433,88 @@ main{display:grid;grid-template-columns:clamp(228px,23vw,290px) 1fr;gap:clamp(6p
 .card.locked .cN{color:rgba(74,44,24,.5);}
 .card.mine{background:var(--butter);}
 
+/* ============================================================
+   PHONES
+   The kitchen is a counter you walk along, so it needs width.
+   On a narrow phone held upright we ask for a turn instead of
+   squashing four stations into 390px.
+   ============================================================ */
+#rotate{
+  position:fixed;inset:0;z-index:200;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(14px,4vh,34px);
+  padding:24px;text-align:center;
+  background:var(--butter);
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(255,255,255,.5) 0 3px, transparent 4px),
+    radial-gradient(circle at 72% 66%, rgba(255,255,255,.4) 0 3px, transparent 4px);
+  background-size:110px 110px,150px 150px;
+}
+#rotate .ph{
+  font-size:clamp(78px,26vw,150px);line-height:1;
+  filter:drop-shadow(4px 6px 4px rgba(74,44,24,.4));
+  animation:turnMe 2.4s ease-in-out infinite;
+}
+@keyframes turnMe{
+  0%,30%{transform:rotate(0deg)}
+  55%,85%{transform:rotate(-90deg)}
+  100%{transform:rotate(0deg)}
+}
+#rotate .msg{
+  font-size:clamp(26px,8.5vw,48px);font-weight:700;letter-spacing:.04em;
+  color:var(--cream);background:var(--tomato);
+  border:6px solid var(--brown);border-radius:22px;
+  padding:10px clamp(18px,6vw,36px);
+  box-shadow:7px 8px 0 rgba(74,44,24,.4);
+  text-shadow:3px 3px 0 rgba(74,44,24,.5);
+  transform:rotate(-2deg);
+}
+#rotate .sub{font-size:clamp(15px,4.6vw,24px);font-weight:600;color:rgba(74,44,24,.65);}
+
+@media (orientation:portrait) and (max-width:760px){
+  #rotate{display:flex;}
+  #app{display:none;}
+}
+
+/* ---------- narrow screens: a 3-wide pantry eats a third of a phone,
+              so drop to 2 columns and let the shelf scroll ---------- */
+@media (max-width:780px){
+  main{grid-template-columns:clamp(152px,23vw,200px) 1fr;}
+  #shelf{grid-template-columns:repeat(2,minmax(64px,1fr));align-content:start;}
+}
+
+/* ---------- short screens (a phone on its side) ---------- */
+@media (max-height:470px){
+  header{padding:2px clamp(6px,1.4vw,12px);}
+  #title{font-size:clamp(13px,4.6dvh,22px);}
+  /* the book and mute buttons are rarely pressed, so they may shrink
+     below 64px here — the walking and DO IT buttons never do */
+  .chip{min-width:50px;min-height:50px;padding:0 7px;font-size:clamp(13px,4dvh,18px);}
+  .chip .ico{font-size:clamp(16px,4.4dvh,20px);}
+  #floor{height:clamp(48px,15dvh,92px);}
+  #chef{font-size:clamp(34px,11dvh,56px);}
+  #customer{font-size:clamp(34px,11dvh,60px);}
+  #pan{width:min(clamp(70px,34dvh,150px), 94%);height:auto;}
+  #board,#plate,#seat{height:clamp(64px,23dvh,110px);}
+  .steptag{font-size:clamp(8px,3.4dvh,13px);padding:2px 6px;}
+  .chipword{font-size:clamp(8px,3.4dvh,14px);padding:2px 7px;}
+  #shelf{gap:clamp(3px,1.6dvh,9px);}
+  .ingredient{font-size:clamp(22px,8dvh,34px);}
+  #controls{margin-top:clamp(3px,1.2dvh,8px);}
+  .ctrl{min-width:64px;min-height:64px;font-size:clamp(20px,7dvh,30px);}
+  #doIt{min-width:clamp(130px,30vw,260px);font-size:clamp(14px,4.6dvh,24px);}
+}
+
 @media (prefers-reduced-motion:reduce){*,*::after,*::before{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}}
 </style>
 </head>
 <body>
+
+<div id="rotate">
+  <div class="ph">📱</div>
+  <div class="msg">TURN ME AROUND</div>
+  <div class="sub">The kitchen is very wide!</div>
+</div>
 
 <div id="app">
 
