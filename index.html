@@ -97,6 +97,9 @@ main{display:grid;grid-template-columns:clamp(228px,23vw,290px) 1fr;gap:clamp(6p
 .panel-label{text-align:center;font-size:clamp(11px,1.8dvh,18px);font-weight:700;letter-spacing:.07em;margin-bottom:clamp(3px,.6dvh,8px);}
 #shelf{
   flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
+  /* the finger may scroll this list vertically; drags to the stations
+     are horizontal, so pan-y hands the browser exactly what it needs */
+  touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
   display:grid;grid-template-columns:repeat(3,minmax(64px,1fr));
   gap:clamp(4px,1.2dvh,12px);align-content:space-evenly;padding:2px;scrollbar-width:thin;
 }
@@ -107,7 +110,7 @@ main{display:grid;grid-template-columns:clamp(228px,23vw,290px) 1fr;gap:clamp(6p
   display:flex;align-items:center;justify-content:center;
   font-size:clamp(27px,3.9dvh,40px);
   background:var(--cream-deep);border:4px solid var(--brown);border-radius:18px;
-  box-shadow:3px 4px 0 rgba(74,44,24,.3);cursor:grab;touch-action:none;
+  box-shadow:3px 4px 0 rgba(74,44,24,.3);cursor:grab;touch-action:pan-y;
   filter:drop-shadow(2px 3px 1px rgba(74,44,24,.35));
   transition:transform .14s var(--pop),box-shadow .14s ease;
 }
@@ -1039,7 +1042,9 @@ shelf.addEventListener("pointerdown", e=>{
   Sound.init();
   drag = { id:el.dataset.id, el, startX:e.clientX, startY:e.clientY, fromRect:el.getBoundingClientRect(), moved:false, ghost:null };
   el.classList.add("pressed");
-  e.preventDefault();
+  // never swallow a touch — the finger may be starting a scroll of the
+  // pantry, and the browser fires pointercancel if it takes the gesture
+  if(e.pointerType !== "touch") e.preventDefault();
 });
 
 window.addEventListener("pointermove", e=>{

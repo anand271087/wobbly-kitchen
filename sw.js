@@ -1,7 +1,7 @@
 /* Wobbly Kitchen — offline service worker.
    Bump CACHE when you change the game and the tablet will pick it up
    on the second launch after the change. */
-const CACHE = "wobbly-kitchen-v2";
+const CACHE = "wobbly-kitchen-v3";
 const ASSETS = [
   "./",
   "./index.html",
